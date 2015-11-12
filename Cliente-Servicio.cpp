@@ -1,3 +1,4 @@
+
 #include <cstdlib>
 #include <iostream>
 #include <cstring>
@@ -182,12 +183,16 @@ private:
 public:
     void muestra();
     void setCliente();
+    void agregarAuto();
 };
 void Cliente::setCliente(){
     cout << "Nombre: ";
     cin >>nombre;
     cout << "Telefono: ";
     cin >>telefono;
+    agregarAuto();
+}
+void Cliente::agregarAuto(){
     coche.agregar();
 }
 void Cliente::muestra(){
@@ -195,6 +200,7 @@ void Cliente::muestra(){
     cout << "Teléfono: "<<telefono;
     coche.mostrar();
 }
+//==============================================================================
 
 //<<<<<<<<<<<<<<<   Clase Persona  >>>>>>>>>>>>>>>
 class Persona{
@@ -274,18 +280,143 @@ void Persona::mostrarDir(){
 }
 //==============================================================================
 
-
-
-
-
-//<<<<<<<<<<<<<<<<<<   Clase Reparación   >>>>>>>>>>>>>>>>>>
-
-//==============================================================================
-int main(int argc, char** argv) {
-    Persona x;
-    while(1){
-        x.menu();
-    }
-    return 0;
+//<<<<<<<<<<<<<<<<<<   Clase Encargo (En una cola)   >>>>>>>>>>>>>>>>>>
+class Encargo{
+private:
+    Cliente cl;
+    Encargo *sig;
+    friend class Cola;
+};
+class Cola{
+private:
+    Encargo *ini;
+    Encargo *fin;
+public:
+    //Operaciones básicas
+    Cola();
+    //~Cola();
+    int estaVacia();
+    void mete(Cliente x);
+    void saca();
+    Cliente datoFte();
+    void mostrar();
+    int contar();
+    void menu();
+};
+Cola::Cola(){
+    ini=NULL;
+    fin=NULL;
 }
 
+//Indica si está vacía
+int Cola::estaVacia(){
+    return (ini==NULL);
+}
+
+//Mete un elemento
+void Cola::mete(Cliente x){
+    Encargo *p;
+    p= new Encargo();
+    p->cl=x;
+    p->sig=NULL;
+    if(!estaVacia()){
+        fin->sig=p;
+        fin=p;
+    }
+    else{
+        ini=p;
+        fin=p;
+    }
+        
+}
+//Saca
+void Cola::saca(){
+    if(ini==NULL&&fin==NULL){
+        cout << "\n(!)Error no hay encargos";
+        exit(1);
+    }
+    Encargo *p=ini;
+    ini=ini->sig;
+    if(ini==NULL)
+        fin=NULL;
+    delete p;
+}
+
+//Muestra el dato de enfrente
+Cliente Cola::datoFte(){
+    return ini->cl;
+}
+
+//Muestra los elementos de la cola
+void Cola::mostrar(){
+    Cola aux;
+    cout << "\n";
+    while(!estaVacia()){
+        datoFte().muestra();
+        aux.mete(datoFte());
+        saca();
+    }
+    ini=aux.ini;
+    fin=aux.fin;
+}
+
+//Cuenta los elementos de la cola
+int Cola::contar(){
+    Cola aux;
+    int con;
+    while(!estaVacia()){
+        con++;
+        aux.mete(datoFte());
+        saca();
+    }
+    ini=aux.ini;
+    fin=aux.fin;
+    return con;
+}
+void menu(){
+    int des;
+    int id;
+    Persona x;
+    Cliente c;
+    Cola co;
+    cout << "1)Ha llegado un nuevo cliente \n2)Llego un cliente ya conocido"
+            "\n3)Se ha atendido al cliente\n4)Mostrar clientes por atender"
+            "\n5)Mostrar siguiente cliente\n6)Salir;";
+    cin >>des;
+    switch(des){
+        case 1:
+            cout << "Numero identificador";
+            cin >> id;
+            c.setCliente();
+            x.ingresar(id, c);
+            co.mete(c);
+            break;
+        case 2:
+            cout << "Dame el numero de cliente: ";
+            cin >> id;
+            x.encontrar(id);
+            break;
+        case 3:
+            co.saca();
+            break;
+        case 4:
+            co.mostrar();
+            break;
+        case 5:
+            co.datoFte().muestra();
+            break;
+        case 6:
+            cout << "Se fueron todos";
+            exit(1);
+            break;
+        default:
+            cout << "Opcion invalida";
+    }
+}
+//==============================================================================
+int main(int argc, char** argv) {
+    while(1){
+        menu();
+    }    
+    return 0;
+}
