@@ -1,10 +1,3 @@
-/* 
- * File:   main.cpp
- * Author: zerhogie
- *
- * Created on 11 de noviembre de 2015, 21:07
- */
-
 #include <cstdlib>
 #include <iostream>
 #include <cstring>
@@ -13,141 +6,6 @@
 #include <iomanip>
 using namespace std;
 typedef pair<string, string> persona;
-
-//<<<<<<<<<<<<<<<   Clase Cliente   >>>>>>>>>>>>>>>
-class Cliente{
-private:
-    string nombre;
-    string telefono;
-    Vehiculo coche;
-public:
-    void muestra();
-    void setCliente();
-};
-void Cliente::setCliente(){
-    cout << "Nombre: ";
-    cin >>nombre;
-    cout << "Telefono: ";
-    cin >>telefono;
-    coche.agregar();
-}
-void muestra(){
-    
-}
-
-//<<<<<<<<<<<<<<<   Clase Persona  >>>>>>>>>>>>>>>
-class Persona{
-private:
-    map<int, Cliente> agenda;
-public:
-    void menu();
-    void ingresar(string nom, string num);
-    void borrar(string nom);
-    void encontrar(string nom);
-    void mostrarDir();
-};
-void Persona::menu(){
-    string nom, num;
-    int des;
-    cout << "\n1)Ingresar cliente al sistema\n2)Borrar cliente\n3)Encontar cliente\n4)Mostrar Directorio\n5)Salir\nOpciÃ³n: ";
-    cin >> des;
-    switch(des){
-        case 1:
-            cout << "Nombre: ";
-            cin >> nom;
-            cout << "TelÃ©fono: ";
-            cin >> num;
-            ingresar(nom, num);
-            break;
-        case 2:
-            cout << "Dame el nombre de quien borro: ";
-            cin >> nom;
-            borrar(nom);
-            break;
-        case 3:
-            cout << "Â¿A quien buscas? ";
-            cin >> nom;
-            encontrar(nom);
-            break;
-        case 4:
-            mostrarDir();
-            break;
-        case 5:
-            cout << " Gracias por usar el directorio \1 \n";
-            exit(1);
-            break;
-        default:
-            cout << "OpciÃ³n invÃ¡lida\n";
-            break;
-    }
-}
-
-void Persona::ingresar(string nom, string num){
-    agenda.insert(persona(nom, num));
-}
-
-void Persona::borrar(string nom){
-    map<string, string>::iterator p = agenda.find(nom);
-    if(p != agenda.end())
-        agenda.erase(p);
-    else 
-        cout << nom << " no estÃ¡ en el directorio.\n";
-}
-void Persona::encontrar(string nom){
-    map<string, string>::iterator p = agenda.find(nom);
-    if(p != agenda.end())
-     cout << "Numero telefonico de : " << nom << " = " << p->second << endl;
-    else 
-     cout << nom << " no estÃ¡ en el directorio.\n";
-}
-//==============================================================================
-
-//<<<<<<<<<<<<<<<<<<   Clase Vehiculo   >>>>>>>>>>>>>>>>>>
-class Vehiculo{
-private:
-    string marca, modelo, tipo, color, placa;
-    int kilometros;
-    Pila servicio;
-public:
-    Vehiculo();
-    void mostrar();
-    void agregar();
-};
-Vehiculo::Vehiculo(){
-    marca="";
-    modelo="";
-    tipo="";
-    color="";
-    placa="";
-    kilometros=0;
-}
-void Vehiculo::mostrar(){
-    if(modelo!=""){
-        cout << "\n";
-        cout << setw(10) << "Modelo: " << setw(12) << modelo<< "\n";
-        cout << setw(10) << "Marca: " << setw(12) << marca;
-        cout << setw(10) << "Tipo de auto: " << setw(12) << tipo<< "\n";
-        cout << setw(10) << "Color: " << setw(12) << color << "\n";
-        cout << setw(10) << "Placa: " << setw(12) << placa<< "\n";
-        cout << setw(10) << "KilÃ³metros: " << setw(12) << kilometros << "\n";
-    }
-}
-void Vehiculo::agregar(){
-    cout << "Proporciona lo que se pide, sin espacios: \n";
-    cout << "Modelo: ";
-    cin >> modelo;
-    cout << "Marca: ";
-    cin >> marca;
-    cout << "Tipo de auto (estÃ¡ndar/automÃ¡tico): ";
-    cin >> tipo;
-    cout << "Color: ";
-    cin >> color;
-    cout << "Placas: ";
-    cin >> placa;
-    cout << "KilÃ³metros: ";
-    cin >> kilometros;
-}
-//==============================================================================
 
 //<<<<<<<<<<<<<<<<<<   Clase Servicio  >>>>>>>>>>>>>>>>>>
 class Servicio{
@@ -257,44 +115,177 @@ Servicio x;
 }
 //==============================================================================
 
-//<<<<<<<<<<<<<<<<<<   Clase ReparaciÃ³n   >>>>>>>>>>>>>>>>>>
-class Reparacion{
+//<<<<<<<<<<<<<<<<<<   Clase Vehiculo   >>>>>>>>>>>>>>>>>>
+class Vehiculo{
 private:
-    map<Vehiculo, Pila> reparo;
+    string marca, modelo, tipo, color, placa;
+    int kilometros;
+    Pila servicio;
 public:
-    void menu();
-    void ingresar(Vehiculo v, Pila s);
-    void borrar(Vehiculo v);
-    void encontrar(Vehiculo v);
-    void mostrarDir();
+    Vehiculo();
+    void mostrar();
+    void agregar();
+    void agregarServ();
 };
-void Reparacion::ingresar(Vehiculo v, Pila s){
-    reparo.insert(pair<Vehiculo, Pila>(v, s));
+Vehiculo::Vehiculo(){
+    marca="";
+    modelo="";
+    tipo="";
+    color="";
+    placa="";
+    kilometros=0;
+}
+void Vehiculo::mostrar(){
+    if(modelo!=""){
+        cout << "\n";
+        cout << setw(10) << "Modelo: " << setw(12) << modelo<< "\n";
+        cout << setw(10) << "Marca: " << setw(12) << marca;
+        cout << setw(10) << "Tipo de auto: " << setw(12) << tipo<< "\n";
+        cout << setw(10) << "Color: " << setw(12) << color << "\n";
+        cout << setw(10) << "Placa: " << setw(12) << placa<< "\n";
+        cout << setw(10) << "Kilómetros: " << setw(12) << kilometros << "\n";
+    }
+}
+void Vehiculo::agregar(){
+    char d;
+    cout << "Proporciona lo que se pide, sin espacios: \n";
+    cout << "Modelo: ";
+    cin >> modelo;
+    cout << "Marca: ";
+    cin >> marca;
+    cout << "Tipo de auto (estándar/automático): ";
+    cin >> tipo;
+    cout << "Color: ";
+    cin >> color;
+    cout << "Placas: ";
+    cin >> placa;
+    cout << "Kilómetros: ";
+    cin >> kilometros;
+    cout << "¿Deseas agregar servicio? (s/n)";
+    cin >>d;
+    if(d=='s' ||d=='S')
+        agregarServ();
+}
+void Vehiculo::agregarServ(){
+    Servicio x;
+    x.agregar();
+    servicio.push(x);    
+}
+//==============================================================================
+
+//<<<<<<<<<<<<<<<   Clase Cliente   >>>>>>>>>>>>>>>
+class Cliente{
+private:
+    string nombre;
+    string telefono;
+    Vehiculo coche;
+public:
+    void muestra();
+    void setCliente();
+};
+void Cliente::setCliente(){
+    cout << "Nombre: ";
+    cin >>nombre;
+    cout << "Telefono: ";
+    cin >>telefono;
+    coche.agregar();
+}
+void Cliente::muestra(){
+    cout << "Nombre: " << nombre;
+    cout << "Teléfono: "<<telefono;
+    coche.mostrar();
 }
 
-void Reparacion::borrar(Vehiculo v){
-    map<Vehiculo, Pila>::iterator p = reparo.find(v);
-    if(p != reparo.end())
-        reparo.erase(p);
-    else 
-        cout << " No estÃ¡ en el directorio.\n";
+//<<<<<<<<<<<<<<<   Clase Persona  >>>>>>>>>>>>>>>
+class Persona{
+private:
+    map<int, Cliente> agenda;
+public:
+    void menu();
+    void ingresar(int id, Cliente c);
+    void borrar(int id);
+    void encontrar(int id);
+    void mostrarDir();
+};
+void Persona::menu(){
+    int id=0;
+    Cliente c;
+    int des;
+    cout << "\n1)Ingresar cliente al sistema\n2)Borrar cliente\n3)Encontar cliente\n4)Mostrar Directorio\n5)Salir\nOpción: ";
+    cin >> des;
+    switch(des){
+        case 1:
+            cout << "Numero identificador";
+            cin >> id;
+            c.setCliente();
+            ingresar(id, c);
+            break;
+        case 2:
+            cout << "Dame el numero de quien borro: ";
+            cin >> id;
+            borrar(id);
+            break;
+        case 3:
+            cout << "Dame numero de quien buscas: ";
+            cin >> id;
+            encontrar(id);
+            break;
+        case 4:
+            mostrarDir();
+            break;
+        case 5:
+            cout << " Gracias por usar el directorio \1 \n";
+            exit(1);
+            break;
+        default:
+            cout << "Opción inválida\n";
+            break;
+    }
 }
-void Reparacion::encontrar(Vehiculo v){
-    map<Vehiculo, Pila>::iterator p = reparo.find(v);
-    if(p != reparo.end()){
-        cout << "Vehiculo: ";
-        v.mostrar(); 
-        cout << "\nTiene los servicios: \n";
-        Pila x = p->second;
-        x.muestra();
+
+void Persona::ingresar(int id, Cliente c){
+    agenda.insert(pair<int, Cliente>(id, c));
+}
+
+void Persona::borrar(int id){
+    map<int, Cliente>::iterator p = agenda.find(id);
+    if(p != agenda.end())
+        agenda.erase(p);
+    else 
+        cout << id << " no está en el directorio.\n";
+}
+void Persona::encontrar(int id){
+    map<int, Cliente>::iterator p = agenda.find(id);
+    if(p != agenda.end()){
+     cout << "Id: " << id << endl;
+     p->second.muestra();
     }
     else 
-     cout << "El vehiculo no estÃ¡ en el directorio.\n";
+     cout << id << " no está en el directorio.\n";
 }
+void Persona::mostrarDir(){
+    map<int, Cliente>::iterator p = agenda.begin();
+    while (p != agenda.end())
+    {
+      cout << p->first << setw(12);
+      p->second.muestra();
+      p ++;
+    }
+}
+//==============================================================================
+
+
+
+
+
+//<<<<<<<<<<<<<<<<<<   Clase Reparación   >>>>>>>>>>>>>>>>>>
 
 //==============================================================================
 int main(int argc, char** argv) {
-
+    Persona x;
+    while(1){
+        x.menu();
+    }
     return 0;
 }
 
