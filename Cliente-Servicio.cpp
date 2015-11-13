@@ -1,4 +1,3 @@
-
 #include <cstdlib>
 #include <iostream>
 #include <cstring>
@@ -184,6 +183,8 @@ public:
     void muestra();
     void setCliente();
     void agregarAuto();
+    string getNom();
+    Vehiculo getV();
 };
 void Cliente::setCliente(){
     cout << "Nombre: ";
@@ -192,12 +193,18 @@ void Cliente::setCliente(){
     cin >>telefono;
     agregarAuto();
 }
+void Cliente::getNom(){
+    return nombre;
+}
+void Cliente::getV(){
+    return Vehiculo();
+}
 void Cliente::agregarAuto(){
     coche.agregar();
 }
 void Cliente::muestra(){
     cout << "Nombre: " << nombre;
-    cout << "Teléfono: "<<telefono;
+    cout << "   Teléfono: "<<telefono;
     coche.mostrar();
 }
 //==============================================================================
@@ -210,7 +217,7 @@ public:
     void menu();
     void ingresar(int id, Cliente c);
     void borrar(int id);
-    void encontrar(int id);
+    Cliente encontrar(int id);
     void mostrarDir();
 };
 void Persona::menu(){
@@ -259,12 +266,13 @@ void Persona::borrar(int id){
         agenda.erase(p);
     else 
         cout << id << " no está en el directorio.\n";
+    
 }
-void Persona::encontrar(int id){
+Cliente Persona::encontrar(int id){
     map<int, Cliente>::iterator p = agenda.find(id);
     if(p != agenda.end()){
      cout << "Id: " << id << endl;
-     p->second.muestra();
+     return p->second;
     }
     else 
      cout << id << " no está en el directorio.\n";
@@ -373,15 +381,24 @@ int Cola::contar(){
     fin=aux.fin;
     return con;
 }
-void menu(){
+//==============================================================================
+
+// <<<<<<<<<<<<<<<<<<   Menú para el usuario    >>>>>>>>>>>>>>>>>>
+class Menu{
+private:
     int des;
     int id;
     Persona x;
     Cliente c;
     Cola co;
+    //int ganancia; por implementar!
+public:
+    void menu();
+};
+void Menu::menu(){    
     cout << "1)Ha llegado un nuevo cliente \n2)Llego un cliente ya conocido"
             "\n3)Se ha atendido al cliente\n4)Mostrar clientes por atender"
-            "\n5)Mostrar siguiente cliente\n6)Salir;";
+            "\n5)Mostrar siguiente cliente\n6)Salir\nDesición: ";
     cin >>des;
     switch(des){
         case 1:
@@ -394,7 +411,13 @@ void menu(){
         case 2:
             cout << "Dame el numero de cliente: ";
             cin >> id;
-            x.encontrar(id);
+            c=x.encontrar(id);
+            if(c.getNom()!=co.datoFte().getNom()){
+                co.mete(c);
+                c.muestra();
+                cout << "\nAgrega el servicio que se le dará esta ves:\n";
+                c.getV().agregarServ();
+            }
             break;
         case 3:
             co.saca();
@@ -415,8 +438,9 @@ void menu(){
 }
 //==============================================================================
 int main(int argc, char** argv) {
+    Menu x;
     while(1){
-        menu();
+        x.menu();
     }    
     return 0;
 }
