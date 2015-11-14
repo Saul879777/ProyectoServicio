@@ -1,3 +1,10 @@
+/* 
+ * File:   main.cpp
+ * Author: zerhogie
+ *
+ * Created on 11 de noviembre de 2015, 21:07
+ */
+
 #include <cstdlib>
 #include <iostream>
 #include <cstring>
@@ -10,17 +17,19 @@ typedef pair<string, string> persona;
 //<<<<<<<<<<<<<<<<<<   Clase Servicio  >>>>>>>>>>>>>>>>>>
 class Servicio{
 private:
-    string fecha, tipo, costo, descripcion;
+    string fecha, tipo, descripcion;
+    float costo;
 public:
     Servicio();
     void mostrar();
-    void agregar(string f, string t, string c, string d);
+    void agregar(string f, string t, float c, string d);
     void agregar();
+    float getCosto();
 };
 Servicio::Servicio(){
     fecha="";
     tipo="";
-    costo="";
+    costo=0;
     descripcion="";
 }
 void Servicio::mostrar(){
@@ -31,7 +40,7 @@ void Servicio::mostrar(){
         cout << setw(10) << "Costo: " << setw(12) << costo;
     }
 }
-void Servicio::agregar(string f, string t, string c, string d){
+void Servicio::agregar(string f, string t, float c, string d){
     fecha=f;
     tipo=t;
     costo=c;
@@ -43,6 +52,9 @@ void Servicio::agregar(){
     cout <<"Tipo de servicio: "; cin >>tipo;
     cout << "Decripcion: "; cin >> descripcion;
     cout << "Precio: "; cin >> costo;
+}
+float Servicio::getCosto(){
+    return costo;
 }
 //==============================================================================
 
@@ -63,8 +75,7 @@ public:
      void push(Servicio x);
      Servicio pop();
      void muestra();
-  //operaciones complementarias
-     void copia(Pila c1);
+     float precio();
 };
 /*OPERACIONES BASICAS*/
 Pila::Pila(){
@@ -84,8 +95,7 @@ Servicio Pila::pop(){
   Servicios *p = aptope;
   Servicio x;
   if(p==NULL){
-     cout<<"Error lista vacia";
-     exit(1);
+     cout<<"No tiene servicios";
   }
   aptope = aptope->sig;
   x = p->serv; 
@@ -102,16 +112,12 @@ while(!estaVacia()){
     aux.push(x);
 }
 cout<<"\n-----------------------------------------------------\n";
-copia(aux);
+while(!aux.estaVacia())
+    push(aux.pop());
 return;
 }
-void Pila::copia(Pila c){
-Servicio x;
-  while(!c.estaVacia()){
-    x = c.pop();
-    push(x);
-  }
-  return;
+float Pila::precio(){
+    return aptope->serv.getCosto();
 }
 //==============================================================================
 
@@ -126,6 +132,7 @@ public:
     void mostrar();
     void agregar();
     void agregarServ();
+    Pila getServ();
 };
 Vehiculo::Vehiculo(){
     marca="";
@@ -139,37 +146,45 @@ void Vehiculo::mostrar(){
     if(modelo!=""){
         cout << "\n";
         cout << setw(10) << "Modelo: " << setw(12) << modelo<< "\n";
-        cout << setw(10) << "Marca: " << setw(12) << marca;
+        cout << setw(10) << "Marca: " << setw(12) << marca << "\n";
         cout << setw(10) << "Tipo de auto: " << setw(12) << tipo<< "\n";
         cout << setw(10) << "Color: " << setw(12) << color << "\n";
         cout << setw(10) << "Placa: " << setw(12) << placa<< "\n";
-        cout << setw(10) << "KilÛmetros: " << setw(12) << kilometros << "\n";
+        cout << setw(10) << "Kil√≥metros: " << setw(12) << kilometros << "\nServicios: \n";
+        servicio.muestra();
     }
 }
 void Vehiculo::agregar(){
-    char d;
+    char d='s';
     cout << "Proporciona lo que se pide, sin espacios: \n";
     cout << "Modelo: ";
     cin >> modelo;
     cout << "Marca: ";
     cin >> marca;
-    cout << "Tipo de auto (est·ndar/autom·tico): ";
+    cout << "Tipo de auto (est√°ndar/autom√°tico): ";
     cin >> tipo;
     cout << "Color: ";
     cin >> color;
     cout << "Placas: ";
     cin >> placa;
-    cout << "KilÛmetros: ";
+    cout << "Kil√≥metros: ";
     cin >> kilometros;
-    cout << "øDeseas agregar servicio? (s/n)";
-    cin >>d;
+    if(!servicio.estaVacia()){
+        cout << "¬øDeseas agregar servicio? (s/n)";
+        cin >>d;
+    }
     if(d=='s' ||d=='S')
         agregarServ();
 }
 void Vehiculo::agregarServ(){
     Servicio x;
     x.agregar();
-    servicio.push(x);    
+    servicio.push(x);
+    cout << "Comprobar----------------------\n";
+    x.mostrar();
+}
+Pila Vehiculo::getServ(){
+    return servicio;
 }
 //==============================================================================
 
@@ -193,10 +208,10 @@ void Cliente::setCliente(){
     cin >>telefono;
     agregarAuto();
 }
-void Cliente::getNom(){
+string Cliente::getNom(){
     return nombre;
 }
-void Cliente::getV(){
+Vehiculo Cliente::getV(){
     return Vehiculo();
 }
 void Cliente::agregarAuto(){
@@ -204,7 +219,7 @@ void Cliente::agregarAuto(){
 }
 void Cliente::muestra(){
     cout << "Nombre: " << nombre;
-    cout << "   TelÈfono: "<<telefono;
+    cout << "   Tel√©fono: "<<telefono;
     coche.mostrar();
 }
 //==============================================================================
@@ -224,7 +239,7 @@ void Persona::menu(){
     int id=0;
     Cliente c;
     int des;
-    cout << "\n1)Ingresar cliente al sistema\n2)Borrar cliente\n3)Encontar cliente\n4)Mostrar Directorio\n5)Salir\nOpciÛn: ";
+    cout << "\n1)Ingresar cliente al sistema\n2)Borrar cliente\n3)Encontar cliente\n4)Mostrar Directorio\n5)Salir\nOpci√≥n: ";
     cin >> des;
     switch(des){
         case 1:
@@ -241,7 +256,7 @@ void Persona::menu(){
         case 3:
             cout << "Dame numero de quien buscas: ";
             cin >> id;
-            encontrar(id);
+            encontrar(id).muestra();
             break;
         case 4:
             mostrarDir();
@@ -251,7 +266,7 @@ void Persona::menu(){
             exit(1);
             break;
         default:
-            cout << "OpciÛn inv·lida\n";
+            cout << "Opci√≥n inv√°lida\n";
             break;
     }
 }
@@ -265,7 +280,7 @@ void Persona::borrar(int id){
     if(p != agenda.end())
         agenda.erase(p);
     else 
-        cout << id << " no est· en el directorio.\n";
+        cout << id << " no est√° en el directorio.\n";
     
 }
 Cliente Persona::encontrar(int id){
@@ -275,7 +290,7 @@ Cliente Persona::encontrar(int id){
      return p->second;
     }
     else 
-     cout << id << " no est· en el directorio.\n";
+     cout << id << " no est√° en el directorio.\n";
 }
 void Persona::mostrarDir(){
     map<int, Cliente>::iterator p = agenda.begin();
@@ -300,7 +315,7 @@ private:
     Encargo *ini;
     Encargo *fin;
 public:
-    //Operaciones b·sicas
+    //Operaciones b√°sicas
     Cola();
     //~Cola();
     int estaVacia();
@@ -316,7 +331,7 @@ Cola::Cola(){
     fin=NULL;
 }
 
-//Indica si est· vacÌa
+//Indica si est√° vac√≠a
 int Cola::estaVacia(){
     return (ini==NULL);
 }
@@ -383,22 +398,24 @@ int Cola::contar(){
 }
 //==============================================================================
 
-// <<<<<<<<<<<<<<<<<<   Men˙ para el usuario    >>>>>>>>>>>>>>>>>>
+// <<<<<<<<<<<<<<<<<<   Men√∫ para el usuario    >>>>>>>>>>>>>>>>>>
 class Menu{
 private:
     int des;
     int id;
     Persona x;
-    Cliente c;
     Cola co;
-    //int ganancia; por implementar!
+    float ganancia=0.0;
 public:
     void menu();
 };
-void Menu::menu(){    
-    cout << "1)Ha llegado un nuevo cliente \n2)Llego un cliente ya conocido"
+void Menu::menu(){ 
+    Cliente c;
+    Servicio s;
+    cout << "\n1)Ha llegado un nuevo cliente \n2)Llego un cliente ya conocido"
             "\n3)Se ha atendido al cliente\n4)Mostrar clientes por atender"
-            "\n5)Mostrar siguiente cliente\n6)Salir\nDesiciÛn: ";
+            "\n5)Mostrar siguiente cliente\n6)Mostrar Servicios del siguiente cliente\n"
+            "7)Administrar directorio\n8)Salir\nDesici√≥n: ";
     cin >>des;
     switch(des){
         case 1:
@@ -412,15 +429,26 @@ void Menu::menu(){
             cout << "Dame el numero de cliente: ";
             cin >> id;
             c=x.encontrar(id);
+            c.muestra();
             if(c.getNom()!=co.datoFte().getNom()){
                 co.mete(c);
                 c.muestra();
-                cout << "\nAgrega el servicio que se le dar· esta ves:\n";
+                cout << "\nAgrega el servicio que se le dar√° esta ves:\n";
                 c.getV().agregarServ();
+            }
+            else{
+                cout <<"\nAgrega el servicio adicional:\n";
+                if(!co.datoFte().getV().getServ().estaVacia()){
+                    //ganancia=ganancia+(co.datoFte().getV().getServ().precio());
+                }
+                co.datoFte().getV().agregarServ();
             }
             break;
         case 3:
+            //ganancia=ganancia+(co.datoFte().getV().getServ().precio());
+            cout << "Se ha atendido a: " << co.datoFte().getNom();
             co.saca();
+            //cout << "\nSe han generado: $"<< ganancia << " de ganancias\n\n";
             break;
         case 4:
             co.mostrar();
@@ -429,6 +457,12 @@ void Menu::menu(){
             co.datoFte().muestra();
             break;
         case 6:
+            co.datoFte().getV().getServ().muestra();
+            break;
+        case 7:
+            x.menu();
+            break;
+        case 8:
             cout << "Se fueron todos";
             exit(1);
             break;
@@ -444,3 +478,4 @@ int main(int argc, char** argv) {
     }    
     return 0;
 }
+
