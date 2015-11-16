@@ -37,7 +37,7 @@ void Servicio::mostrar(){
         cout << setw(10) << "Servicio: " << setw(12) << descripcion << "\n";
         cout << setw(10) << "Tipo de servicio: " << setw(12) << tipo<< "\n";
         cout << setw(10) << "Fecha: " << setw(12) << fecha<< "\n";
-        cout << setw(10) << "Costo: " << setw(12) << costo;
+        cout << setw(10) << "Costo: " << setw(12) << costo << "\n\n";
     }
 }
 void Servicio::agregar(string f, string t, float c, string d){
@@ -105,13 +105,16 @@ Servicio Pila::pop(){
 void Pila::muestra(){
 Pila aux;
 Servicio x;
+int con=1;
 cout << "-----------------------------------------------------\n";
 while(!estaVacia()){
+    cout << "Servicio: " << con << "\n";
     x = pop();
     x.mostrar();
     aux.push(x);
+    con++;
 }
-cout<<"\n-----------------------------------------------------\n";
+cout<<"\n-----------------------------------------------------\n\n";
 while(!aux.estaVacia())
     push(aux.pop());
 return;
@@ -156,7 +159,7 @@ void Vehiculo::mostrar(){
 }
 void Vehiculo::agregar(){
     char d='s';
-    cout << "Proporciona lo que se pide, sin espacios: \n";
+    cout << "\n Registro del auto\n Proporciona lo que se pide, sin espacios: \n";
     cout << "Modelo: ";
     cin >> modelo;
     cout << "Marca: ";
@@ -180,8 +183,7 @@ void Vehiculo::agregarServ(){
     Servicio x;
     x.agregar();
     servicio.push(x);
-    cout << "Comprobar----------------------\n";
-    x.mostrar();
+    cout <<"\nServicio Agregado\n\n";
 }
 Pila Vehiculo::getServ(){
     return servicio;
@@ -212,7 +214,7 @@ string Cliente::getNom(){
     return nombre;
 }
 Vehiculo Cliente::getV(){
-    return Vehiculo();
+    return coche;
 }
 void Cliente::agregarAuto(){
     coche.agregar();
@@ -286,7 +288,6 @@ void Persona::borrar(int id){
 Cliente Persona::encontrar(int id){
     map<int, Cliente>::iterator p = agenda.find(id);
     if(p != agenda.end()){
-     cout << "Id: " << id << endl;
      return p->second;
     }
     else 
@@ -405,10 +406,14 @@ private:
     int id;
     Persona x;
     Cola co;
-    float ganancia=0.0;
+    float ganancia;
 public:
     void menu();
+    Menu();
 };
+Menu::Menu(){
+    ganancia=0;
+}
 void Menu::menu(){ 
     Cliente c;
     Servicio s;
@@ -423,32 +428,40 @@ void Menu::menu(){
             cin >> id;
             c.setCliente();
             x.ingresar(id, c);
-            co.mete(c);
+            co.mete(x.encontrar(id));
             break;
         case 2:
             cout << "Dame el numero de cliente: ";
             cin >> id;
             c=x.encontrar(id);
-            c.muestra();
             if(c.getNom()!=co.datoFte().getNom()){
-                co.mete(c);
                 c.muestra();
                 cout << "\nAgrega el servicio que se le dará esta ves:\n";
                 c.getV().agregarServ();
+                x.borrar(id);
+                x.ingresar(id, c);
+                co.mete(x.encontrar(id));
             }
             else{
+                c.muestra();
                 cout <<"\nAgrega el servicio adicional:\n";
                 if(!co.datoFte().getV().getServ().estaVacia()){
-                    //ganancia=ganancia+(co.datoFte().getV().getServ().precio());
+                    ganancia+=(co.datoFte().getV().getServ().precio());
                 }
                 co.datoFte().getV().agregarServ();
+                x.borrar(id);
+                x.ingresar(id,c);
             }
             break;
         case 3:
-            //ganancia=ganancia+(co.datoFte().getV().getServ().precio());
-            cout << "Se ha atendido a: " << co.datoFte().getNom();
-            co.saca();
-            //cout << "\nSe han generado: $"<< ganancia << " de ganancias\n\n";
+            if(!co.estaVacia()){
+                ganancia+=(co.datoFte().getV().getServ().precio());
+                cout << "Se ha atendido a: " << co.datoFte().getNom();
+                co.saca();
+                cout << "\nSe han generado: $"<< ganancia << " de ganancias\n\n";
+            }
+            else
+                cout << "\nError, no tenías a nadie a quien atender\n";
             break;
         case 4:
             co.mostrar();
@@ -468,6 +481,7 @@ void Menu::menu(){
             break;
         default:
             cout << "Opcion invalida";
+            break;
     }
 }
 //==============================================================================
