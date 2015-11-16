@@ -1,10 +1,3 @@
-/* 
- * File:   main.cpp
- * Author: zerhogie
- *
- * Created on 11 de noviembre de 2015, 21:07
- */
-
 #include <cstdlib>
 #include <iostream>
 #include <cstring>
@@ -153,7 +146,7 @@ void Vehiculo::mostrar(){
         cout << setw(10) << "Tipo de auto: " << setw(12) << tipo<< "\n";
         cout << setw(10) << "Color: " << setw(12) << color << "\n";
         cout << setw(10) << "Placa: " << setw(12) << placa<< "\n";
-        cout << setw(10) << "Kil√≥metros: " << setw(12) << kilometros << "\nServicios: \n";
+        cout << setw(10) << "KilÛmetros: " << setw(12) << kilometros << "\nServicios: \n";
         servicio.muestra();
     }
 }
@@ -164,16 +157,16 @@ void Vehiculo::agregar(){
     cin >> modelo;
     cout << "Marca: ";
     cin >> marca;
-    cout << "Tipo de auto (est√°ndar/autom√°tico): ";
+    cout << "Tipo de auto (est·ndar/autom·tico): ";
     cin >> tipo;
     cout << "Color: ";
     cin >> color;
     cout << "Placas: ";
     cin >> placa;
-    cout << "Kil√≥metros: ";
+    cout << "KilÛmetros: ";
     cin >> kilometros;
     if(!servicio.estaVacia()){
-        cout << "¬øDeseas agregar servicio? (s/n)";
+        cout << "øDeseas agregar servicio? (s/n)";
         cin >>d;
     }
     if(d=='s' ||d=='S')
@@ -201,27 +194,24 @@ public:
     void setCliente();
     void agregarAuto();
     string getNom();
-    Vehiculo getV();
+    Vehiculo *getV();
 };
 void Cliente::setCliente(){
     cout << "Nombre: ";
     cin >>nombre;
     cout << "Telefono: ";
     cin >>telefono;
-    agregarAuto();
+    coche.agregar();
 }
 string Cliente::getNom(){
     return nombre;
 }
-Vehiculo Cliente::getV(){
-    return coche;
-}
-void Cliente::agregarAuto(){
-    coche.agregar();
+Vehiculo *Cliente::getV(){
+    return &coche;
 }
 void Cliente::muestra(){
     cout << "Nombre: " << nombre;
-    cout << "   Tel√©fono: "<<telefono;
+    cout << "   TelÈfono: "<<telefono;
     coche.mostrar();
 }
 //==============================================================================
@@ -241,7 +231,7 @@ void Persona::menu(){
     int id=0;
     Cliente c;
     int des;
-    cout << "\n1)Ingresar cliente al sistema\n2)Borrar cliente\n3)Encontar cliente\n4)Mostrar Directorio\n5)Salir\nOpci√≥n: ";
+    cout << "\n1)Ingresar cliente al sistema\n2)Borrar cliente\n3)Encontar cliente\n4)Mostrar Directorio\n5)Salir\nOpciÛn: ";
     cin >> des;
     switch(des){
         case 1:
@@ -268,7 +258,7 @@ void Persona::menu(){
             exit(1);
             break;
         default:
-            cout << "Opci√≥n inv√°lida\n";
+            cout << "OpciÛn inv·lida\n";
             break;
     }
 }
@@ -282,7 +272,7 @@ void Persona::borrar(int id){
     if(p != agenda.end())
         agenda.erase(p);
     else 
-        cout << id << " no est√° en el directorio.\n";
+        cout << id << " no est· en el directorio.\n";
     
 }
 Cliente Persona::encontrar(int id){
@@ -291,7 +281,7 @@ Cliente Persona::encontrar(int id){
      return p->second;
     }
     else 
-     cout << id << " no est√° en el directorio.\n";
+     cout << id << " no est· en el directorio.\n";
 }
 void Persona::mostrarDir(){
     map<int, Cliente>::iterator p = agenda.begin();
@@ -316,7 +306,7 @@ private:
     Encargo *ini;
     Encargo *fin;
 public:
-    //Operaciones b√°sicas
+    //Operaciones b·sicas
     Cola();
     //~Cola();
     int estaVacia();
@@ -332,7 +322,7 @@ Cola::Cola(){
     fin=NULL;
 }
 
-//Indica si est√° vac√≠a
+//Indica si est· vacÌa
 int Cola::estaVacia(){
     return (ini==NULL);
 }
@@ -399,7 +389,7 @@ int Cola::contar(){
 }
 //==============================================================================
 
-// <<<<<<<<<<<<<<<<<<   Men√∫ para el usuario    >>>>>>>>>>>>>>>>>>
+// <<<<<<<<<<<<<<<<<<   Men˙ para el usuario    >>>>>>>>>>>>>>>>>>
 class Menu{
 private:
     int des;
@@ -420,7 +410,7 @@ void Menu::menu(){
     cout << "\n1)Ha llegado un nuevo cliente \n2)Llego un cliente ya conocido"
             "\n3)Se ha atendido al cliente\n4)Mostrar clientes por atender"
             "\n5)Mostrar siguiente cliente\n6)Mostrar Servicios del siguiente cliente\n"
-            "7)Administrar directorio\n8)Salir\nDesici√≥n: ";
+            "7)Administrar directorio\n8)Salir\nDesiciÛn: ";
     cin >>des;
     switch(des){
         case 1:
@@ -436,8 +426,8 @@ void Menu::menu(){
             c=x.encontrar(id);
             if(c.getNom()!=co.datoFte().getNom()){
                 c.muestra();
-                cout << "\nAgrega el servicio que se le dar√° esta ves:\n";
-                c.getV().agregarServ();
+                cout << "\nAgrega el servicio que se le dar· esta ves:\n";
+                c.getV()->agregarServ();
                 x.borrar(id);
                 x.ingresar(id, c);
                 co.mete(x.encontrar(id));
@@ -445,23 +435,23 @@ void Menu::menu(){
             else{
                 c.muestra();
                 cout <<"\nAgrega el servicio adicional:\n";
-                if(!co.datoFte().getV().getServ().estaVacia()){
-                    ganancia+=(co.datoFte().getV().getServ().precio());
+                if(!co.datoFte().getV()->getServ().estaVacia()){
+                    ganancia+=(co.datoFte().getV()->getServ().precio());
                 }
-                co.datoFte().getV().agregarServ();
+                co.datoFte().getV()->agregarServ();
                 x.borrar(id);
                 x.ingresar(id,c);
             }
             break;
         case 3:
             if(!co.estaVacia()){
-                ganancia+=(co.datoFte().getV().getServ().precio());
+                ganancia+=(co.datoFte().getV()->getServ().precio());
                 cout << "Se ha atendido a: " << co.datoFte().getNom();
                 co.saca();
                 cout << "\nSe han generado: $"<< ganancia << " de ganancias\n\n";
             }
             else
-                cout << "\nError, no ten√≠as a nadie a quien atender\n";
+                cout << "\nError, no tenÌas a nadie a quien atender\n";
             break;
         case 4:
             co.mostrar();
@@ -470,7 +460,7 @@ void Menu::menu(){
             co.datoFte().muestra();
             break;
         case 6:
-            co.datoFte().getV().getServ().muestra();
+            co.datoFte().getV()->getServ().muestra();
             break;
         case 7:
             x.menu();
@@ -492,4 +482,3 @@ int main(int argc, char** argv) {
     }    
     return 0;
 }
-
